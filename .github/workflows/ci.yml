@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - '**/feature/**'
   pull_request:
     branches:
       - main
@@ -14,23 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: '1.20'
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.20'  
 
-    - name: Install dependencies
-      run: go mod download
+      - name: Install dependencies
+        run: go mod download
 
-    - name: Run tests and collect coverage
-      run: |
-        go test -v -coverprofile=coverage.txt
-        go tool cover -func=coverage.txt
+      - name: Run tests
+        run: go test -v -coverprofile=coverage.out ./...
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        files: coverage.txt
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: coverage.out
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Build
+        run: go build ./cmd
