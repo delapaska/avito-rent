@@ -75,9 +75,9 @@ func (h *Handler) handleCreateHouse(c *gin.Context) {
 		return
 	}
 
-	utils.WriteJSON(c, http.StatusOK, house)
-
+	utils.WriteJSON(c, http.StatusCreated, house) // Используем http.StatusCreated для успешного создания
 }
+
 func (h *Handler) handleGetHouseFlats(c *gin.Context) {
 	requestId, _ := c.Get("RequestId")
 	houseID := c.Param("id")
@@ -92,7 +92,7 @@ func (h *Handler) handleGetHouseFlats(c *gin.Context) {
 			"request_id": requestId,
 			"code":       http.StatusInternalServerError,
 		})
-		utils.WriteError(c, http.StatusInternalServerError, err)
+
 		return
 	}
 
@@ -138,10 +138,10 @@ func (h *Handler) handleSubscribeHouse(c *gin.Context) {
 		return
 	}
 
-	utils.WriteJSON(c, http.StatusOK, gin.H{
+	utils.WriteJSON(c, http.StatusCreated, gin.H{
 		"message":    "Subscription successful",
 		"request_id": requestId,
-		"code":       http.StatusOK,
+		"code":       http.StatusCreated,
 	})
 
 	go h.notifyUser(houseID, payload.Email)

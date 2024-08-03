@@ -6,6 +6,9 @@ networks:
 
 services:
   avito-flat:
+    build:
+      context: .
+      dockerfile: ./deploy/service/Dockerfile
     networks:
       - my_network
     environment:
@@ -19,12 +22,15 @@ services:
       - "8080:8080"
     depends_on:
       - avito-db
-    build: ./
+ 
+
   avito-db:
     networks:
       - my_network
     restart: always
-    image: postgres:latest
+    build:
+      context: .
+      dockerfile: ./deploy/pg/Dockerfile
     volumes:
       - ./postgres-data/avito:/var/lib/postgresql/data
     environment:

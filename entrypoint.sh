@@ -1,7 +1,7 @@
 
 set -e
 
-sh /wait-for-db.sh
+sh ./wait-for-db.sh
 
 ./migrate up
 

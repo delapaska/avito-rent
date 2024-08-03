@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/delapaska/avito-rent/middleware"
@@ -22,71 +21,123 @@ func NewHandler(store models.UserStore) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(router *gin.Engine) {
-
 	router.POST("/login", h.handleLogin)
 	router.POST("/register", h.handleRegister)
-
 }
 
 func (h *Handler) handleLogin(c *gin.Context) {
 	var payload models.LoginUserPayload
+	requestId, _ := c.Get("RequestId")
 	if err := utils.ParseJSON(c, &payload); err != nil {
-		utils.WriteError(c, http.StatusBadRequest, err)
+		c.Header("Retry-After", "30")
+		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
+			"message":    err.Error(),
+			"request_id": requestId,
+			"code":       http.StatusBadRequest,
+		})
 		return
 	}
 
 	if err := utils.Validate.Struct(payload); err != nil {
+		c.Header("Retry-After", "30")
 		errors := err.(validator.ValidationErrors)
-		utils.WriteError(c, http.StatusBadRequest, fmt.Errorf("invalid payload %v", errors))
+		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
+			"message":    utils.FormatValidationError(errors),
+			"request_id": requestId,
+			"code":       http.StatusBadRequest,
+		})
 		return
 	}
 
 	u, err := h.store.GetUserById(payload.ID)
 	if err != nil {
-		utils.WriteError(c, http.StatusBadRequest, fmt.Errorf("invalid email or password"))
+		c.Header("Retry-After", "30")
+		utils.WriteJSON(c, http.StatusNotFound, gin.H{
+			"message":    "User not found",
+			"request_id": requestId,
+			"code":       http.StatusNotFound,
+		})
 		return
 	}
 
 	if !middleware.ComparePasswords(u.Password, []byte(payload.Password)) {
-		utils.WriteError(c, http.StatusBadRequest, fmt.Errorf("invalid email or password"))
+		c.Header("Retry-After", "30")
+		utils.WriteJSON(c, http.StatusUnauthorized, gin.H{
+			"message":    "Invalid credentials",
+			"request_id": requestId,
+			"code":       http.StatusUnauthorized,
+		})
 		return
 	}
 
 	token, err := middleware.GenerateJWT(u.User_id, u.UserType)
 	if err != nil {
-		utils.WriteError(c, http.StatusInternalServerError, err)
+		c.Header("Retry-After", "30")
+		utils.WriteJSON(c, http.StatusInternalServerError, gin.H{
+			"message":    "Could not generate token",
+			"request_id": requestId,
+			"code":       http.StatusInternalServerError,
+		})
 		return
 	}
 
 	utils.WriteJSON(c, http.StatusOK, gin.H{"token": token})
 }
+
 func (h *Handler) handleRegister(c *gin.Context) {
+	requestId, _ := c.Get("RequestId")
 	var payload models.RegisterUserPayload
 	if err := utils.ParseJSON(c, &payload); err != nil {
-		utils.WriteError(c, http.StatusBadRequest, err)
+		c.Header("Retry-After", "30")
+		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
+			"message":    err.Error(),
+			"request_id": requestId,
+			"code":       http.StatusBadRequest,
+		})
 		return
 	}
 
 	if err := utils.Validate.Struct(payload); err != nil {
+		c.Header("Retry-After", "30")
 		errors := err.(validator.ValidationErrors)
-		utils.WriteError(c, http.StatusBadRequest, fmt.Errorf("invalid payload %v", errors))
+		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
+			"message":    utils.FormatValidationError(errors),
+			"request_id": requestId,
+			"code":       http.StatusBadRequest,
+		})
 		return
 	}
 
 	err := middleware.RoleGuard(payload.UserType)
 	if err != nil {
-		utils.WriteError(c, http.StatusBadRequest, err)
+		c.Header("Retry-After", "30")
+		utils.WriteJSON(c, http.StatusForbidden, gin.H{
+			"message":    "Invalid user type",
+			"request_id": requestId,
+			"code":       http.StatusForbidden,
+		})
 		return
 	}
+
 	user, err := h.store.GetUserByEmail(payload.Email)
 	if err == nil && user.Email != "" {
-		utils.WriteError(c, http.StatusBadRequest, fmt.Errorf("user with email %s already exists", payload.Email))
+		c.Header("Retry-After", "30")
+		utils.WriteJSON(c, http.StatusConflict, gin.H{
+			"message":    "User already exists",
+			"request_id": requestId,
+			"code":       http.StatusConflict,
+		})
 		return
 	}
 
 	hashedPassword, err := middleware.HashPassword(payload.Password)
 	if err != nil {
-		utils.WriteError(c, http.StatusInternalServerError, err)
+		c.Header("Retry-After", "30")
+		utils.WriteJSON(c, http.StatusInternalServerError, gin.H{
+			"message":    "Could not hash password",
+			"request_id": requestId,
+			"code":       http.StatusInternalServerError,
+		})
 		return
 	}
 
@@ -99,7 +150,12 @@ func (h *Handler) handleRegister(c *gin.Context) {
 
 	err = h.store.CreateUser(newUser)
 	if err != nil {
-		utils.WriteError(c, http.StatusInternalServerError, err)
+		c.Header("Retry-After", "30")
+		utils.WriteJSON(c, http.StatusInternalServerError, gin.H{
+			"message":    "Could not create user",
+			"request_id": requestId,
+			"code":       http.StatusInternalServerError,
+		})
 		return
 	}
 

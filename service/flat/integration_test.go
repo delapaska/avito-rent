@@ -56,7 +56,7 @@ func TestHandleCreateFlat(t *testing.T) {
 		recorder := httptest.NewRecorder()
 		r.ServeHTTP(recorder, req)
 
-		assert.Equal(t, http.StatusOK, recorder.Code)
+		assert.Equal(t, http.StatusCreated, recorder.Code)
 
 		var response models.Flat
 		err = json.NewDecoder(bytes.NewReader(recorder.Body.Bytes())).Decode(&response)

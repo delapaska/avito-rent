@@ -76,7 +76,7 @@ func (h *Handler) handleCreateFlat(c *gin.Context) {
 		return
 	}
 
-	utils.WriteJSON(c, http.StatusOK, flat)
+	utils.WriteJSON(c, http.StatusCreated, flat)
 }
 
 func (h *Handler) handleUpdateFlatStatus(c *gin.Context) {
@@ -103,7 +103,11 @@ func (h *Handler) handleUpdateFlatStatus(c *gin.Context) {
 	}
 
 	if err := utils.ParseJSON(c, &payload); err != nil {
-		utils.WriteError(c, http.StatusBadRequest, err)
+		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
+			"message":    err.Error(),
+			"request_id": requestId,
+			"code":       http.StatusBadRequest,
+		})
 		return
 	}
 
@@ -118,6 +122,7 @@ func (h *Handler) handleUpdateFlatStatus(c *gin.Context) {
 
 	flat, err := h.store.UpdateFlatStatus(userIDUUID, payload)
 	if err != nil {
+		c.Header("Retry-After", "30")
 		utils.WriteJSON(c, http.StatusInternalServerError, gin.H{
 			"message":    err.Error(),
 			"request_id": requestId,

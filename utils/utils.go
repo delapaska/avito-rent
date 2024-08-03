@@ -26,11 +26,6 @@ func WriteJSON(c *gin.Context, status int, v any) error {
 	return json.NewEncoder(c.Writer).Encode(v)
 }
 
-func WriteError(c *gin.Context, status int, err error) {
-	WriteJSON(c, status, gin.H{
-		"error": err.Error(),
-	})
-}
 func FormatValidationError(err error) map[string]string {
 	errors := make(map[string]string)
 	if validationErrors, ok := err.(validator.ValidationErrors); ok {

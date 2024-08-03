@@ -22,9 +22,7 @@ func NewHandler(store models.DummyStore) *Handler {
 
 func (h *Handler) RegisterRoutes(router *gin.Engine) {
 	router.Use(middleware.GenerateRequestId())
-
 	router.GET("/dummyLogin", h.handleDummyLogin)
-
 }
 
 func (h *Handler) handleDummyLogin(c *gin.Context) {
@@ -33,7 +31,6 @@ func (h *Handler) handleDummyLogin(c *gin.Context) {
 
 	if err := utils.ParseJSON(c, &payload); err != nil {
 		c.Header("Retry-After", "30")
-
 		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
 			"message":    err.Error(),
 			"request_id": requestId,
@@ -55,11 +52,10 @@ func (h *Handler) handleDummyLogin(c *gin.Context) {
 
 	userID := uuid.New()
 	tokenString, err := middleware.GenerateJWT(userID, payload.UserType)
-
 	if err != nil {
 		c.Header("Retry-After", "30")
 		utils.WriteJSON(c, http.StatusInternalServerError, gin.H{
-			"message":    err.Error(),
+			"message":    "Could not generate token",
 			"request_id": requestId,
 			"code":       http.StatusInternalServerError,
 		})
