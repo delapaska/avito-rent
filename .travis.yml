@@ -1,22 +1,17 @@
 language: go
-
 go:
-  - "1.22"   
-
-install:
-  - go mod download
-
+  - "1.22"  
+ 
 script:
-  - go test -v -coverprofile=coverage.out
-  - go build -v ./cmd/...
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)  
+  - go test -v ./...  
+  - go build -o myapp cmd/main.go  
 
  
 notifications:
   email:
     on_success: never
     on_failure: always
+
  
-sudo: false
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
