@@ -29,6 +29,13 @@ jobs:
         go test -v -coverprofile=coverage.out
         go tool cover -func=coverage.out
 
+    - name: Upload coverage results
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage
+        path: coverage.out
+
+
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
       with:
