@@ -2,9 +2,11 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -23,9 +25,19 @@ jobs:
       run: go mod tidy
 
     - name: Run tests
-      run: go test ./... -coverprofile=coverage.out
+      run: go test ./... -v
 
-    - name: Upload coverage to Codecov
+    - name: Generate coverage report
+      run: go test -coverprofile=coverage.out ./...
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: coverage.out
+
+    - name: Upload to Codecov
       uses: codecov/codecov-action@v2
       with:
-        file: coverage.out
+        files: coverage.out
+        token: ${{ secrets.CODECOV_TOKEN }}
