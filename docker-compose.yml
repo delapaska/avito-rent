@@ -1,0 +1,41 @@
+version: '3.8'
+
+networks:
+  my_network:
+    driver: bridge
+
+services:
+  avito-flat:
+    networks:
+      - my_network
+    environment:
+      DATABASE_PORT: 5432
+      DB_HOST: avito-db
+      DB_USER: postgres
+      DB_PASSWORD: 1
+      DB_NAME: avitoflat
+  
+    ports:
+      - "8080:8080"
+    depends_on:
+      - avito-db
+    build: ./
+  avito-db:
+    networks:
+      - my_network
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./postgres-data/avito:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5436:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+ 
