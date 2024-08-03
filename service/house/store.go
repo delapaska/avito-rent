@@ -16,7 +16,7 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 func (s *Store) CreateHouse(house models.House) (models.House, error) {
-
+	log.Println("Create House")
 	query := `
 		INSERT INTO house (address, year, developer, created_at, updated_at)
 		VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
