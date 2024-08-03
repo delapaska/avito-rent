@@ -1,4 +1,4 @@
-# Your Project Name
+ 
 
-![Build Status](https://github.com/delapaska/avito-rent/actions/workflows/ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/delapaska/avito-rent/branch/main/graph/badge.svg)](https://codecov.io/gh/delapaska/avito-rent)
+![Build Status](https://img.shields.io/github/workflow/status/delapaska/avito-rent/CI?label=Build)
+![Codecov](https://img.shields.io/codecov/c/github/delapaska/avito-rent?token=${CODECOV_TOKEN})
