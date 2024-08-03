@@ -1,4 +1,4 @@
-name: GO-CI
+name: CI
 
 on:
   push:
@@ -14,27 +14,36 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Set up Go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v4
       with:
-        go-version: '1.20'
+        go-version: 1.18
 
     - name: Install dependencies
-      run: go mod download
+      run: go mod tidy
 
     - name: Run tests
-      run: go test -v ./... | tee result.log | go-junit-report > result.xml
+      run: go test -v ./...
 
-    - name: Upload test results
+    - name: Generate test coverage report
+      run: |
+        mkdir -p coverage
+        go test -coverprofile=coverage/coverage.out ./...
+        go tool cover -html=coverage/coverage.out -o coverage/coverage.html
+
+    - name: Upload coverage report
       uses: actions/upload-artifact@v3
       with:
-        name: test-results
-        path: result.xml
+        name: coverage-report
+        path: coverage/coverage.out
 
-    - name: Install codecov
-      run: go install github.com/codecov/codecov-go@latest
-
-    - name: Upload coverage to codecov
-      run: codecov
+    - name: Upload to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: coverage/coverage.out
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
