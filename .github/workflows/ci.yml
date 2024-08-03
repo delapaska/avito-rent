@@ -1,4 +1,4 @@
-name: CI
+name: Go CI
 
 on:
   push:
@@ -10,28 +10,40 @@ on:
 
 jobs:
   build:
+    name: Build and Test
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: '1.20'  
+    - name: Set up Go
+      uses: go-actions/setup-go@v2
+      with:
+        go-version: '1.20' # Укажите версию Go, которая вам нужна
 
-      - name: Install dependencies
-        run: go mod download
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: | 
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
 
-      - name: Run tests
-        run: go test -v -coverprofile=coverage.out ./...
+    - name: Install dependencies
+      run: go mod download
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          file: coverage.out
-          token: ${{ secrets.CODECOV_TOKEN }}
+    - name: Run tests
+      run: go test -v ./...
 
-      - name: Build
-        run: go build ./cmd
+    - name: Upload coverage to Codecov
+      run: codecov -f coverage.out
+    
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage
+        path: coverage.out
