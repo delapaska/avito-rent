@@ -48,21 +48,18 @@ git clone https://github.com/delapaska/avito-rent.git
         - Удаление: `sudo docker-compose down`
 
 ### Endpoints
-
 Далее указаны примеры маршрутов при запуске через docker-compose:
-    
-    - noAuth: 
+- noAuth: 
     - GET `localhost:8080/dummyLogin?userType=moderator`
     - POST ` localhost:8080/register`
-        - JSON: 
-
-            ```json
-            {
+    - JSON: 
+         ```json
+        {
             "email":"email@mail.ru", 
             "password":"secretKey", 
             "userType": "moderator"
-            }
-            ``` 
+        }
+        ``` 
 
 
 
