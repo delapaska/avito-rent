@@ -9,7 +9,7 @@ import (
 
 // @Description Status of a flat
 // @Type string
-// @Enum created,approved,declined,on moderate
+// @Enum created,approved,declined,on moderation
 // @Example "created"
 type FlatStatus string
 
@@ -24,7 +24,7 @@ const (
 	StatusDeclined FlatStatus = "declined"
 
 	// @Description Flat is under moderation and approval is pending
-	StatusOnModeration FlatStatus = "on moderate"
+	StatusOnModeration FlatStatus = "on moderation"
 )
 
 var ValidStatuses = map[FlatStatus]bool{
@@ -137,9 +137,9 @@ type Flat struct {
 // @Example { "status": "approved", "id": 1 }
 type UpdateStatusPayload struct {
 	// @Description Status to update the flat to
-	// @Enum created,approved,declined,on moderate
+	// @Enum created,approved,declined,on moderation
 	// @Example "approved"
-	Status FlatStatus `json:"status" validate:"required"`
+	Status FlatStatus `json:"status" validate:"required oneof=created on moderation approved declined"`
 
 	// @Description Unique identifier of the flat to update
 	// @Example 1

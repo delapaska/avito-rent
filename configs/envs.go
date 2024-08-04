@@ -13,10 +13,8 @@ type Config struct {
 	DBPort     string
 	DBUser     string
 	DBPassword string
-
-	DBName string
-
-	JWTSecret string
+	DBName     string
+	JWTSecret  string
 }
 
 var Envs = initConfig()

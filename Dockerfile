@@ -1,19 +1,22 @@
 FROM golang:alpine as builder
 
-
 WORKDIR /app
 
- 
 COPY go.mod go.sum ./
 RUN go mod download
 
-
 COPY . .
 
-
 RUN go build -o /main ./cmd/main.go
-
 RUN go build -o /migrate ./cmd/migrate/main.go
+
+COPY init.sh ./init.sh
+
+RUN apk --no-cache add postgresql-client
+
+RUN chmod +x ./init.sh
+
+ENTRYPOINT ["sh", "./init.sh"]
 
 
 FROM alpine:latest

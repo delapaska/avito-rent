@@ -1,17 +1,10 @@
-build: 
-	@go build -o bin/cadKeeperAuth cmd/main.go 
-
-test: 
-	@go test -v ./... 
-	
-run: build 
-	@./bin/cadKeeperAuth
-
-migration:
-	@migrate create -ext sql -dir cmd/migrate/migrations $(filter-out $@,$(MAKECMDGOALS))
-	
-migrate-up:
-	@go run cmd/migrate/main.go up
-
-migrate-down:
-	@go run cmd/migrate/main.go down
+build:
+	sudo docker-compose build
+run-logs:
+	sudo docker-compose up
+run:
+	sudo docker-compose up -d
+stop:
+	sudo docker-compose stop
+down:
+	sudo docker-compose down

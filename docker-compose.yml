@@ -1,10 +1,8 @@
-# docker-compose.yml
-
 version: '3.8'
 
 services:
   avito-db:
-    image: postgres:13
+    image: postgres:latest 
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -16,6 +14,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - avito-network
 
   app:
     build: .
@@ -23,12 +23,13 @@ services:
       avito-db:
         condition: service_healthy
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - "8080:8080"
+    networks:
+      - avito-network
 
   migrate:
     image: golang:alpine
@@ -37,13 +38,18 @@ services:
       - .:/app
     entrypoint: ["go", "run", "cmd/migrate/main.go", "up"]
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     depends_on:
       avito-db:
         condition: service_healthy
+    networks:
+      - avito-network
 
 volumes:
   postgres_data:
+
+networks:
+  avito-network:
+    driver: bridge

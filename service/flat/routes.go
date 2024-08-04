@@ -155,8 +155,6 @@ func (h *Handler) handleUpdateFlatStatus(c *gin.Context) {
 	}
 
 	utils.WriteJSON(c, http.StatusOK, gin.H{
-		"flat":       flat,
-		"request_id": requestId,
-		"code":       http.StatusOK,
+		"flat": flat,
 	})
 }

@@ -28,7 +28,7 @@ func main() {
 		"password=%s dbname=%s sslmode=disable",
 		configs.Envs.Host, configs.Envs.DBPort,
 		configs.Envs.DBUser, configs.Envs.DBPassword, configs.Envs.DBName)
-	log.Println("DB CONN ", psqlInfo)
+
 	db, err := db.NewPostgresSQLStorage(psqlInfo)
 	if err != nil {
 		log.Fatal(err)
