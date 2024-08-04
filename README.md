@@ -60,6 +60,50 @@ git clone https://github.com/delapaska/avito-rent.git
             "userType": "moderator"
         }
         ``` 
+    - POST ` localhost:8080/login`
+    - JSON: 
+         ```json
+        {
+            "id": "b540a379-94ac-4eee-8c4e-83faf2f2d508", 
+            "password":"12345"
+        }
+        ``` 
+- authOnly:
+    -GET `localhost:8080/house/1`
+    -POST `localhost:8080/house/1/subscribe`
+    - JSON: 
+         ```json
+        {
+            "email":"email@mail.ru"     
+        }
+        ``` 
+    -POST `localhost:8080/flat/create`
+    - JSON: 
+         ```json
+        {
+            "house_id": 4, 
+            "price": 10000,
+            "rooms": 4
+        }
+        ``` 
+- moderatorsOnly: 
+    -POST `localhost:8080/house/create`
+    - JSON: 
+         ```json
+        {
+            "address":"Лесная улица, 7, Москва, 125196", 
+            "year":2003, 
+            "developer": "Мэрия"
+        }   
+        ``` 
+    -POST `localhost:8080/flat/update`
+    - JSON: 
+         ```json
+        {
+            "id":3, 
+            "status":"on moderation"
+        }
+        ``` 
 
 
 
