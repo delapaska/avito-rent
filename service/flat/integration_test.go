@@ -98,11 +98,11 @@ func TestHandleCreateFlat(t *testing.T) {
 
 	t.Run("should return bad request when payload is invalid", func(t *testing.T) {
 		payload := struct {
-			House_id string `json:"house_id"` // invalid type
+			House_id string `json:"house_id"`
 			Price    int    `json:"price"`
 			Rooms    int    `json:"rooms"`
 		}{
-			House_id: "invalid", // incorrect type
+			House_id: "invalid",
 			Price:    100000,
 			Rooms:    3,
 		}
@@ -148,7 +148,6 @@ func TestHandleCreateFlat(t *testing.T) {
 
 		validate := validator.New()
 
-		// Override the validator with the one that will return validation errors
 		utils.Validate = validate
 
 		req, err := http.NewRequest("POST", "/flats", bytes.NewBuffer(marshalled))
@@ -168,13 +167,11 @@ func TestHandleCreateFlat(t *testing.T) {
 			t.Fatalf("error decoding response: %v", err)
 		}
 
-		// Check if the 'message' is of type map
 		message, ok := response["message"].(map[string]interface{})
 		if !ok {
 			t.Fatalf("expected 'message' to be a map, got %T", response["message"])
 		}
 
-		// Check for specific validation errors in the message
 		assert.Contains(t, message["house_id"].(string), "field validation for 'House_id' failed on the 'required' tag")
 		assert.Equal(t, "test-request-id", req.Header.Get("RequestId"))
 	})
@@ -187,7 +184,6 @@ func TestHandleCreateFlat(t *testing.T) {
 		}
 		marshalled, _ := json.Marshal(payload)
 
-		// Simulate CreateFlat returning an error
 		mock.ExpectBegin()
 		mock.ExpectQuery(`INSERT INTO flat \(house_id, price, rooms, status\) VALUES \(\$1, \$2, \$3, 'created'\) RETURNING id, house_id, price, rooms, status`).
 			WithArgs(payload.House_id, payload.Price, payload.Rooms).
@@ -211,7 +207,6 @@ func TestHandleCreateFlat(t *testing.T) {
 			t.Fatalf("error decoding response: %v", err)
 		}
 
-		// Convert float64 to int for comparison
 		code, ok := response["code"].(float64)
 		if !ok {
 			t.Fatalf("expected 'code' to be a float64, got %T", response["code"])

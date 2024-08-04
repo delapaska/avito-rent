@@ -1,0 +1,516 @@
+definitions:
+  models.Flat:
+    description: Represents a flat in the system
+    properties:
+      house_id:
+        description: |-
+          @Description Unique identifier for the house to which the flat belongs
+          @Example 101
+        type: integer
+      id:
+        description: |-
+          @Description Unique identifier for the flat
+          @Example 1
+        type: integer
+      price:
+        description: |-
+          @Description Price of the flat
+          @Example 1200
+        type: integer
+      rooms:
+        description: |-
+          @Description Number of rooms in the flat
+          @Example 3
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/models.FlatStatus'
+        description: |-
+          @Description Status of the flat
+          @Example "created"
+    type: object
+  models.FlatPayload:
+    description: Payload for creating a new flat
+    properties:
+      house_id:
+        description: |-
+          @Description Unique identifier of the house to which the flat belongs
+          @Example 101
+        type: integer
+      price:
+        description: |-
+          @Description Price of the flat
+          @Example 1200
+        type: integer
+      rooms:
+        description: |-
+          @Description Number of rooms in the flat
+          @Example 3
+        type: integer
+    required:
+    - house_id
+    - price
+    - rooms
+    type: object
+  models.FlatStatus:
+    description: Status of a flat
+    enum:
+    - created
+    - approved
+    - declined
+    - on moderate
+    type: string
+    x-enum-varnames:
+    - StatusCreated
+    - StatusApproved
+    - StatusDeclined
+    - StatusOnModeration
+  models.House:
+    description: House представляет собой структуру данных для хранения информации
+      о доме.
+    properties:
+      address:
+        description: |-
+          @description Адрес дома
+          @example "123 Elm Street"
+        type: string
+      created_at:
+        description: |-
+          @description Дата создания записи
+          @example "2024-08-04T00:00:00Z"
+        type: string
+      developer:
+        description: |-
+          @description Разработчик или строитель дома
+          @example "XYZ Construction"
+        type: string
+      id:
+        description: |-
+          @description Идентификатор дома
+          @example 1
+        type: integer
+      updated_at:
+        description: |-
+          @description Дата последнего обновления записи
+          @example "2024-08-04T00:00:00Z"
+        type: string
+      year:
+        description: |-
+          @description Год постройки
+          @example 2020
+        type: integer
+    type: object
+  models.HousePayload:
+    description: HousePayload представляет собой структуру данных для создания или
+      обновления информации о доме.
+    properties:
+      address:
+        description: |-
+          @description Адрес дома
+          @example "123 Elm Street"
+        type: string
+      developer:
+        description: |-
+          @description Разработчик или строитель дома
+          @example "XYZ Construction"
+        type: string
+      year:
+        description: |-
+          @description Год постройки
+          @example 2020
+        type: integer
+    required:
+    - address
+    - year
+    type: object
+  models.LoginUserPayload:
+    description: Payload for user login
+    properties:
+      id:
+        description: '@example f47ac10b-58cc-4372-a567-0e02b2c3d479'
+        type: string
+      password:
+        description: '@example securePassword123'
+        type: string
+    required:
+    - id
+    - password
+    type: object
+  models.RegisterUserPayload:
+    description: Payload for user registration
+    properties:
+      email:
+        description: '@example user@example.com'
+        type: string
+      password:
+        description: '@example securePassword123'
+        maxLength: 16
+        minLength: 3
+        type: string
+      userType:
+        description: '@example client'
+        enum:
+        - client
+        - moderator
+        type: string
+    required:
+    - email
+    - password
+    - userType
+    type: object
+  models.SubscribePayload:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  models.UpdateStatusPayload:
+    description: Payload for updating the status of a flat
+    properties:
+      id:
+        description: |-
+          @Description Unique identifier of the flat to update
+          @Example 1
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/models.FlatStatus'
+        description: |-
+          @Description Status to update the flat to
+          @Enum created,approved,declined,on moderate
+          @Example "approved"
+    required:
+    - id
+    - status
+    type: object
+  utils.ErrorResponse:
+    description: Error response structure
+    properties:
+      code:
+        description: '@example 400'
+        type: integer
+      message:
+        description: '@example "Invalid input"'
+      request_id:
+        description: '@example "12345"'
+    type: object
+  utils.FlatsResponse:
+    description: Response model for retrieving flats in a house
+    properties:
+      flats:
+        items:
+          $ref: '#/definitions/models.Flat'
+        type: array
+    type: object
+  utils.LoginResponse:
+    description: Successful login response structure
+    properties:
+      token:
+        description: '@example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"'
+        type: string
+    type: object
+  utils.RegisterResponse:
+    description: Successful registration response structure
+    properties:
+      user_id:
+        description: '@example "a4b4a122-11c1-4b52-bd95-4a5d3c4be616"'
+        type: string
+    type: object
+  utils.SubscriptionResponse:
+    description: Response model for subscription confirmation
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      request_id: {}
+    type: object
+info:
+  contact: {}
+  description: This is an API for a test job in Avito
+  title: Avito-Rent API
+  version: "1.0"
+paths:
+  /dummyLogin:
+    get:
+      consumes:
+      - application/json
+      description: Получение JWT токена для dummy пользователя
+      parameters:
+      - description: Type of the user
+        enum:
+        - client
+        - moderator
+        example: client
+        in: query
+        name: userType
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful login
+          schema:
+            $ref: '#/definitions/utils.LoginResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Dummy login
+  /flat/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new flat with provided details. Requires authorization
+        for both moderator and client.
+      parameters:
+      - description: Flat details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.FlatPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Flat created
+          schema:
+            $ref: '#/definitions/models.Flat'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Create Flat
+  /flat/update:
+    post:
+      consumes:
+      - application/json
+      description: Update the status of a flat. Requires moderator access.
+      parameters:
+      - description: Update status details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateStatusPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Flat status updated
+          schema:
+            $ref: '#/definitions/models.Flat'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Update Flat Status
+  /house/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve flats for a specific house. Requires authorization for
+        both moderator and client.
+      parameters:
+      - description: House ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Flats retrieved
+          schema:
+            $ref: '#/definitions/utils.FlatsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Get House Flats
+  /house/{id}/subscribe:
+    post:
+      consumes:
+      - application/json
+      description: Subscribe to updates for a specific house. Requires authorization
+        for both moderator and client.
+      parameters:
+      - description: House ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Subscription details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.SubscribePayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Subscription successful
+          schema:
+            $ref: '#/definitions/utils.SubscriptionResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Subscribe to House
+  /house/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new house. Requires moderator access.
+      parameters:
+      - description: House details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.HousePayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: House created
+          schema:
+            $ref: '#/definitions/models.House'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Create House
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login with user credentials
+      parameters:
+      - description: Login request payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginUserPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful login
+          schema:
+            $ref: '#/definitions/utils.LoginResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Login
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: Register request payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterUserPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            $ref: '#/definitions/utils.RegisterResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "409":
+          description: User already exists
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Register
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

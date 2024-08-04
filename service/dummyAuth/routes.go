@@ -9,7 +9,6 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 )
 
 type Handler struct {
@@ -25,25 +24,35 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 	router.GET("/dummyLogin", h.handleDummyLogin)
 }
 
+// handleDummyLogin обрабатывает запросы на логин
+// @Summary Dummy login
+// @Description Получение JWT токена для dummy пользователя
+// @Accept json
+// @Produce json
+// @Param userType query string true "Type of the user" Enums(client, moderator) example(client)
+// @Success 200 {object} utils.LoginResponse "Successful login"
+// @Failure 400 {object} utils.ErrorResponse "Bad request"
+// @Failure 500 {object} utils.ErrorResponse "Internal server error"
+// @Router /dummyLogin [get]
 func (h *Handler) handleDummyLogin(c *gin.Context) {
-	var payload models.DummyLoginPayload
+	userType := c.Query("userType")
 	requestId, _ := c.Get("RequestId")
 
-	if err := utils.ParseJSON(c, &payload); err != nil {
+	if userType == "" {
 		c.Header("Retry-After", "30")
 		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
-			"message":    err.Error(),
+			"message":    "userType is required",
 			"request_id": requestId,
 			"code":       http.StatusBadRequest,
 		})
 		return
 	}
 
-	if err := utils.Validate.Struct(payload); err != nil {
+	validUserTypes := map[string]bool{"client": true, "moderator": true}
+	if _, valid := validUserTypes[userType]; !valid {
 		c.Header("Retry-After", "30")
-		errors := err.(validator.ValidationErrors)
 		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
-			"message":    utils.FormatValidationError(errors),
+			"message":    "Invalid userType",
 			"request_id": requestId,
 			"code":       http.StatusBadRequest,
 		})
@@ -51,7 +60,7 @@ func (h *Handler) handleDummyLogin(c *gin.Context) {
 	}
 
 	userID := uuid.New()
-	tokenString, err := middleware.GenerateJWT(userID, payload.UserType)
+	tokenString, err := middleware.GenerateJWT(userID, userType)
 	if err != nil {
 		c.Header("Retry-After", "30")
 		utils.WriteJSON(c, http.StatusInternalServerError, gin.H{

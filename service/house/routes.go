@@ -36,6 +36,18 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 	}
 }
 
+// handleCreateHouse creates a new house
+// @Summary Create House
+// @Description Create a new house. Requires moderator access.
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param request body models.HousePayload true "House details"
+// @Success 201 {object} models.House "House created"
+// @Failure 400 {object} utils.ErrorResponse "Bad request"
+// @Failure 401 {object} utils.ErrorResponse "Unauthorized"
+// @Failure 500 {object} utils.ErrorResponse "Internal server error"
+// @Router /house/create [post]
 func (h *Handler) handleCreateHouse(c *gin.Context) {
 	var payload models.HousePayload
 	requestId, _ := c.Get("RequestId")
@@ -78,6 +90,17 @@ func (h *Handler) handleCreateHouse(c *gin.Context) {
 	utils.WriteJSON(c, http.StatusCreated, house) // Используем http.StatusCreated для успешного создания
 }
 
+// @Summary Get House Flats
+// @Description Retrieve flats for a specific house. Requires authorization for both moderator and client.
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "House ID"
+// @Success 200 {object} utils.FlatsResponse "Flats retrieved"
+// @Failure 400 {object} utils.ErrorResponse "Bad request"
+// @Failure 401 {object} utils.ErrorResponse "Unauthorized"
+// @Failure 500 {object} utils.ErrorResponse "Internal server error"
+// @Router /house/{id} [get]
 func (h *Handler) handleGetHouseFlats(c *gin.Context) {
 	requestId, _ := c.Get("RequestId")
 	houseID := c.Param("id")
@@ -100,6 +123,18 @@ func (h *Handler) handleGetHouseFlats(c *gin.Context) {
 		gin.H{"flats": flats})
 }
 
+// @Summary Subscribe to House
+// @Description Subscribe to updates for a specific house. Requires authorization for both moderator and client.
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id path string true "House ID"
+// @Param request body models.SubscribePayload true "Subscription details"
+// @Success 201 {object} utils.SubscriptionResponse "Subscription successful"
+// @Failure 400 {object} utils.ErrorResponse "Bad request"
+// @Failure 401 {object} utils.ErrorResponse "Unauthorized"
+// @Failure 500 {object} utils.ErrorResponse "Internal server error"
+// @Router /house/{id}/subscribe [post]
 func (h *Handler) handleSubscribeHouse(c *gin.Context) {
 	requestId, _ := c.Get("RequestId")
 	houseID := c.Param("id")

@@ -25,6 +25,17 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 	router.POST("/register", h.handleRegister)
 }
 
+// @Summary Login
+// @Description Login with user credentials
+// @Accept json
+// @Produce json
+// @Param request body models.LoginUserPayload true "Login request payload"
+// @Success 200 {object} utils.LoginResponse "Successful login"
+// @Failure 400 {object} utils.ErrorResponse "Bad request"
+// @Failure 401 {object} utils.ErrorResponse "Unauthorized"
+// @Failure 404 {object} utils.ErrorResponse "User not found"
+// @Failure 500 {object} utils.ErrorResponse "Internal server error"
+// @Router /login [post]
 func (h *Handler) handleLogin(c *gin.Context) {
 	var payload models.LoginUserPayload
 	requestId, _ := c.Get("RequestId")
@@ -84,6 +95,16 @@ func (h *Handler) handleLogin(c *gin.Context) {
 	utils.WriteJSON(c, http.StatusOK, gin.H{"token": token})
 }
 
+// @Summary Register
+// @Description Register a new user
+// @Accept json
+// @Produce json
+// @Param request body models.RegisterUserPayload true "Register request payload"
+// @Success 201 {object} utils.RegisterResponse "User created successfully"
+// @Failure 400 {object} utils.ErrorResponse "Bad request"
+// @Failure 409 {object} utils.ErrorResponse "User already exists"
+// @Failure 500 {object} utils.ErrorResponse "Internal server error"
+// @Router /register [post]
 func (h *Handler) handleRegister(c *gin.Context) {
 	requestId, _ := c.Get("RequestId")
 	var payload models.RegisterUserPayload
@@ -104,17 +125,6 @@ func (h *Handler) handleRegister(c *gin.Context) {
 			"message":    utils.FormatValidationError(errors),
 			"request_id": requestId,
 			"code":       http.StatusBadRequest,
-		})
-		return
-	}
-
-	err := middleware.RoleGuard(payload.UserType)
-	if err != nil {
-		c.Header("Retry-After", "30")
-		utils.WriteJSON(c, http.StatusForbidden, gin.H{
-			"message":    "Invalid user type",
-			"request_id": requestId,
-			"code":       http.StatusForbidden,
 		})
 		return
 	}

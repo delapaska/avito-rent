@@ -14,10 +14,6 @@ import (
 )
 
 func GenerateJWT(userID uuid.UUID, userType string) (string, error) {
-	err := RoleGuard(userType)
-	if err != nil {
-		return "", err
-	}
 
 	claims := &models.Claims{
 		UserID:   userID.String(),
@@ -83,7 +79,7 @@ func AuthMiddleware(allowedRoles ...string) gin.HandlerFunc {
 		}
 
 		utils.WriteJSON(c, http.StatusForbidden, gin.H{
-			"message":    "Forbidden",
+			"message":    "You have enought rights to use this endpoint",
 			"request_id": requestId,
 			"code":       http.StatusForbidden,
 		})

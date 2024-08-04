@@ -17,20 +17,6 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
-func scanRowIntoUser(rows *sql.Rows) (*models.User, error) {
-	user := new(models.User)
-
-	err := rows.Scan(
-		&user.User_id,
-		&user.Email,
-		&user.Password,
-		&user.UserType,
-	)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
-}
 func (s *Store) GetUserByEmail(email string) (*models.User, error) {
 	query := `SELECT user_id, email, password, user_type FROM users WHERE email = $1`
 

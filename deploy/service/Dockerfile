@@ -24,7 +24,7 @@ RUN apt-get update && \
 RUN chmod +x ./entrypoint.sh ./wait-for-db.sh 
 
 
-ENTRYPOINT ["sh", "./entrypoint.sh"]
+ENTRYPOINT ["sh", "/entrypoint.sh"]
 
 
 CMD ["./avito-rent"]

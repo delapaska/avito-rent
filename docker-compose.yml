@@ -1,47 +1,49 @@
+# docker-compose.yml
+
 version: '3.8'
 
-networks:
-  my_network:
-    driver: bridge
-
 services:
-  avito-flat:
-    build:
-      context: .
-      dockerfile: ./deploy/service/Dockerfile
-    networks:
-      - my_network
-    environment:
-      DATABASE_PORT: 5432
-      DB_HOST: avito-db
-      DB_USER: postgres
-      DB_PASSWORD: 1
-      DB_NAME: avitoflat
-  
-    ports:
-      - "8080:8080"
-    depends_on:
-      - avito-db
- 
-
   avito-db:
-    networks:
-      - my_network
-    restart: always
-    build:
-      context: .
-      dockerfile: ./deploy/pg/Dockerfile
-    volumes:
-      - ./postgres-data/avito:/var/lib/postgresql/data
+    image: postgres:13
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-    ports:
-      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
- 
+
+  app:
+    build: .
+    depends_on:
+      avito-db:
+        condition: service_healthy
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    ports:
+      - "8080:8080"
+
+  migrate:
+    image: golang:alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    entrypoint: ["go", "run", "cmd/migrate/main.go", "up"]
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    depends_on:
+      avito-db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

@@ -36,6 +36,17 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 
 }
 
+// @Summary Create Flat
+// @Description Create a new flat with provided details. Requires authorization for both moderator and client.
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param request body models.FlatPayload true "Flat details"
+// @Success 201 {object} models.Flat "Flat created"
+// @Failure 400 {object} utils.ErrorResponse "Bad request"
+// @Failure 401 {object} utils.ErrorResponse "Unauthorized"
+// @Failure 500 {object} utils.ErrorResponse "Internal server error"
+// @Router /flat/create [post]
 func (h *Handler) handleCreateFlat(c *gin.Context) {
 	requestId, _ := c.Get("RequestId")
 	var payload models.FlatPayload
@@ -79,6 +90,18 @@ func (h *Handler) handleCreateFlat(c *gin.Context) {
 	utils.WriteJSON(c, http.StatusCreated, flat)
 }
 
+// handleUpdateFlatStatus updates the status of a flat
+// @Summary Update Flat Status
+// @Description Update the status of a flat. Requires moderator access.
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param request body models.UpdateStatusPayload true "Update status details"
+// @Success 200 {object} models.Flat "Flat status updated"
+// @Failure 400 {object} utils.ErrorResponse "Bad request"
+// @Failure 401 {object} utils.ErrorResponse "Unauthorized"
+// @Failure 500 {object} utils.ErrorResponse "Internal server error"
+// @Router /flat/update [post]
 func (h *Handler) handleUpdateFlatStatus(c *gin.Context) {
 	var payload models.UpdateStatusPayload
 	requestId, _ := c.Get("RequestId")

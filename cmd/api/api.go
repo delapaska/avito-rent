@@ -4,11 +4,15 @@ import (
 	"database/sql"
 
 	"github.com/delapaska/avito-rent/configs"
+	_ "github.com/delapaska/avito-rent/docs"
+	"github.com/delapaska/avito-rent/middleware"
 	"github.com/delapaska/avito-rent/service/auth"
 	dummyauth "github.com/delapaska/avito-rent/service/dummyAuth"
 	"github.com/delapaska/avito-rent/service/flat"
 	"github.com/delapaska/avito-rent/service/house"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type APIServer struct {
@@ -19,6 +23,9 @@ type APIServer struct {
 func NewAPIServer(db *sql.DB) *APIServer {
 
 	engine := gin.New()
+	engine.Use(gin.Recovery())
+	engine.Use(middleware.Logger())
+	engine.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	dummyStore := dummyauth.NewStore(db)
 	dummyHandler := dummyauth.NewHandler(dummyStore)
 	dummyHandler.RegisterRoutes(engine)
