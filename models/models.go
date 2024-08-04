@@ -169,11 +169,27 @@ type UserStore interface {
 	GetUserById(id uuid.UUID) (*User, error)
 	CreateUser(user User) error
 }
+
+// @Description User information
+// @Type object
+// @Name User
+// @Example { "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "email": "user@example.com", "password": "password123", "userType": "client" }
 type User struct {
-	User_id  uuid.UUID `json:"user_id"`
-	Email    string    `json:"email"`
-	Password string    `json:"password"`
-	UserType string    `json:"userType"`
+	// @Description Unique identifier of the user
+	// @Example "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+	User_id uuid.UUID `json:"user_id"`
+
+	// @Description Email address of the user
+	// @Example "user@example.com"
+	Email string `json:"email"`
+
+	// @Description Password of the user
+	// @Example "password123"
+	Password string `json:"password"`
+
+	// @Description Type of the user (e.g., client, moderator)
+	// @Example "client"
+	UserType string `json:"userType"`
 }
 
 // RegisterUserPayload представляет данные для регистрации нового пользователя
@@ -206,13 +222,34 @@ type LoginUserPayload struct {
 	Password string `json:"password" validate:"required"`
 }
 
+// @Description Subscription information
+// @Type object
+// @Name Subscription
+// @Example { "id": 1, "house_id": "house_123", "email": "user@example.com", "created_at": "2023-07-21T17:32:28Z" }
 type Subscription struct {
-	ID        int       `json:"id"`
-	HouseID   string    `json:"house_id"`
-	Email     string    `json:"email"`
+	// @Description Unique identifier of the subscription
+	// @Example 1
+	ID int `json:"id"`
+
+	// @Description Unique identifier of the house
+	// @Example "house_123"
+	HouseID string `json:"house_id"`
+
+	// @Description Email address of the subscriber
+	// @Example "user@example.com"
+	Email string `json:"email"`
+
+	// @Description Date and time when the subscription was created
+	// @Example "2023-07-21T17:32:28Z"
 	CreatedAt time.Time `json:"created_at"`
 }
 
+// @Description Payload for subscribing to house updates
+// @Type object
+// @Name SubscribePayload
+// @Example { "email": "user@example.com" }
 type SubscribePayload struct {
+	// @Description Email address to subscribe to house updates
+	// @Example "user@example.com"
 	Email string `json:"email" validate:"required"`
 }

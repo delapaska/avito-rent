@@ -502,7 +502,7 @@ const docTemplate = `{
                 "created",
                 "approved",
                 "declined",
-                "on moderate"
+                "on moderation"
             ],
             "x-enum-varnames": [
                 "StatusCreated",
@@ -611,12 +611,14 @@ const docTemplate = `{
             }
         },
         "models.SubscribePayload": {
+            "description": "Payload for subscribing to house updates",
             "type": "object",
             "required": [
                 "email"
             ],
             "properties": {
                 "email": {
+                    "description": "@Description Email address to subscribe to house updates\n@Example \"user@example.com\"",
                     "type": "string"
                 }
             }
@@ -625,8 +627,7 @@ const docTemplate = `{
             "description": "Payload for updating the status of a flat",
             "type": "object",
             "required": [
-                "id",
-                "status"
+                "id"
             ],
             "properties": {
                 "id": {
@@ -634,7 +635,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "status": {
-                    "description": "@Description Status to update the flat to\n@Enum created,approved,declined,on moderate\n@Example \"approved\"",
+                    "description": "@Description Status to update the flat to\n@Enum created,approved,declined,on moderation\n@Example \"approved\"",
                     "allOf": [
                         {
                             "$ref": "#/definitions/models.FlatStatus"

@@ -58,7 +58,7 @@ definitions:
     - created
     - approved
     - declined
-    - on moderate
+    - on moderation
     type: string
     x-enum-varnames:
     - StatusCreated
@@ -159,8 +159,12 @@ definitions:
     - userType
     type: object
   models.SubscribePayload:
+    description: Payload for subscribing to house updates
     properties:
       email:
+        description: |-
+          @Description Email address to subscribe to house updates
+          @Example "user@example.com"
         type: string
     required:
     - email
@@ -178,11 +182,10 @@ definitions:
         - $ref: '#/definitions/models.FlatStatus'
         description: |-
           @Description Status to update the flat to
-          @Enum created,approved,declined,on moderate
+          @Enum created,approved,declined,on moderation
           @Example "approved"
     required:
     - id
-    - status
     type: object
   utils.ErrorResponse:
     description: Error response structure
