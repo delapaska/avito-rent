@@ -55,13 +55,13 @@ git clone https://github.com/delapaska/avito-rent.git
     - GET `localhost:8080/dummyLogin?userType=moderator`
     - POST ` localhost:8080/register`
         - JSON: 
+
             ```json
             {
-    "email":"email@mail.ru", 
-    "password":"secretKey", 
-    "userType": "moderator"
-}
-
+            "email":"email@mail.ru", 
+            "password":"secretKey", 
+            "userType": "moderator"
+            }
             ``` 
 
 
