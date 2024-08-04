@@ -69,15 +69,15 @@ git clone https://github.com/delapaska/avito-rent.git
         }
         ``` 
 - authOnly:
-    -GET `localhost:8080/house/1`
-    -POST `localhost:8080/house/1/subscribe`
+    - GET `localhost:8080/house/1`
+    - POST `localhost:8080/house/1/subscribe`
     - JSON: 
          ```json
         {
             "email":"email@mail.ru"     
         }
         ``` 
-    -POST `localhost:8080/flat/create`
+    - POST `localhost:8080/flat/create`
     - JSON: 
          ```json
         {
@@ -87,7 +87,7 @@ git clone https://github.com/delapaska/avito-rent.git
         }
         ``` 
 - moderatorsOnly: 
-    -POST `localhost:8080/house/create`
+    - POST `localhost:8080/house/create`
     - JSON: 
          ```json
         {
@@ -96,7 +96,7 @@ git clone https://github.com/delapaska/avito-rent.git
             "developer": "Мэрия"
         }   
         ``` 
-    -POST `localhost:8080/flat/update`
+    - POST `localhost:8080/flat/update`
     - JSON: 
          ```json
         {
