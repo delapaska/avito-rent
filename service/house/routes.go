@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/delapaska/avito-rent/middleware"
 	"github.com/delapaska/avito-rent/models"
@@ -72,7 +73,31 @@ func (h *Handler) handleCreateHouse(c *gin.Context) {
 		})
 		return
 	}
+	if payload.Developer != "" && len(strings.Trim(payload.Developer, " ")) == 0 {
+		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
+			"message":    "address cannot be empty",
+			"request_id": requestId,
+			"code":       http.StatusBadRequest,
+		})
+		return
+	}
 
+	if payload.Address != "" && len(strings.Trim(payload.Address, " ")) == 0 {
+		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
+			"message":    "address cannot be empty",
+			"request_id": requestId,
+			"code":       http.StatusBadRequest,
+		})
+		return
+	}
+	if payload.Year < 0 {
+		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
+			"message":    "year must be more or equal than 0",
+			"request_id": requestId,
+			"code":       http.StatusBadRequest,
+		})
+		return
+	}
 	house, err := h.store.CreateHouse(models.House{
 		Address:   payload.Address,
 		Year:      payload.Year,
@@ -88,7 +113,7 @@ func (h *Handler) handleCreateHouse(c *gin.Context) {
 		return
 	}
 
-	utils.WriteJSON(c, http.StatusCreated, house) // Используем http.StatusCreated для успешного создания
+	utils.WriteJSON(c, http.StatusCreated, house)
 }
 
 // @Summary Get House Flats
