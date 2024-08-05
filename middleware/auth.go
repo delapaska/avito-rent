@@ -79,7 +79,7 @@ func AuthMiddleware(allowedRoles ...string) gin.HandlerFunc {
 		}
 
 		utils.WriteJSON(c, http.StatusForbidden, gin.H{
-			"message":    "You have enought rights to use this endpoint",
+			"message":    "You have not enought rights to use this endpoint",
 			"request_id": requestId,
 			"code":       http.StatusForbidden,
 		})
