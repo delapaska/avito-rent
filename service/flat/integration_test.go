@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/delapaska/avito-rent/models"
@@ -37,13 +38,13 @@ func TestHandleCreateFlat(t *testing.T) {
 			Rooms:    3,
 		}
 		marshalled, _ := json.Marshal(payload)
-
+		currentTime := time.Now().UTC().Format("2006-01-02T15:04:05Z")
 		mock.ExpectBegin()
 		mock.ExpectQuery(`INSERT INTO flat \(house_id, price, rooms, status\) VALUES \(\$1, \$2, \$3, 'created'\) RETURNING id, house_id, price, rooms, status`).
 			WithArgs(payload.House_id, payload.Price, payload.Rooms).
 			WillReturnRows(sqlmock.NewRows([]string{"id", "house_id", "price", "rooms", "status"}).AddRow(1, payload.House_id, payload.Price, payload.Rooms, "created"))
-		mock.ExpectExec(`UPDATE house SET updated_at = CURRENT_TIMESTAMP WHERE id = \$1`).
-			WithArgs(payload.House_id).
+		mock.ExpectExec(`UPDATE house SET updated_at = \$1 WHERE id = \$2`).
+			WithArgs(currentTime, payload.House_id).
 			WillReturnResult(sqlmock.NewResult(1, 1))
 		mock.ExpectCommit()
 

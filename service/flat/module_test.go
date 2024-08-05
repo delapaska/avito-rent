@@ -3,6 +3,7 @@ package flat
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/delapaska/avito-rent/models"
@@ -58,13 +59,14 @@ func TestCreateFlat(t *testing.T) {
 	})
 
 	t.Run("should return error when update query fails", func(t *testing.T) {
+		currentTime := time.Now().UTC().Format("2006-01-02T15:04:05Z")
 		mock.ExpectBegin()
 		mock.ExpectQuery(`INSERT INTO flat \(house_id, price, rooms, status\) VALUES \(\$1, \$2, \$3, 'created'\) RETURNING id, house_id, price, rooms, status`).
 			WithArgs(1, 100000, 3).
 			WillReturnRows(sqlmock.NewRows([]string{"id", "house_id", "price", "rooms", "status"}).
 				AddRow(1, 1, 100000, 3, "created"))
-		mock.ExpectExec(`UPDATE house SET updated_at = CURRENT_TIMESTAMP WHERE id = \$1`).
-			WithArgs(1).
+		mock.ExpectExec(`UPDATE house SET updated_at = \$1 WHERE id = \$2`).
+			WithArgs(currentTime, 1).
 			WillReturnError(fmt.Errorf("update query error"))
 		mock.ExpectRollback()
 
@@ -83,13 +85,14 @@ func TestCreateFlat(t *testing.T) {
 	})
 
 	t.Run("should successfully create flat and update house", func(t *testing.T) {
+		currentTime := time.Now().UTC().Format("2006-01-02T15:04:05Z")
 		mock.ExpectBegin()
 		mock.ExpectQuery(`INSERT INTO flat \(house_id, price, rooms, status\) VALUES \(\$1, \$2, \$3, 'created'\) RETURNING id, house_id, price, rooms, status`).
 			WithArgs(1, 100000, 3).
 			WillReturnRows(sqlmock.NewRows([]string{"id", "house_id", "price", "rooms", "status"}).
 				AddRow(1, 1, 100000, 3, "created"))
-		mock.ExpectExec(`UPDATE house SET updated_at = CURRENT_TIMESTAMP WHERE id = \$1`).
-			WithArgs(1).
+		mock.ExpectExec(`UPDATE house SET updated_at = \$1 WHERE id = \$2`).
+			WithArgs(currentTime, 1).
 			WillReturnResult(sqlmock.NewResult(1, 1))
 		mock.ExpectCommit()
 
