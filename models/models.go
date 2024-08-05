@@ -171,7 +171,6 @@ type User struct {
 	UserType string `json:"userType"`
 }
 
-// RegisterUserPayload представляет данные для регистрации нового пользователя
 // @Description Payload for user registration
 // @Param email body string true "Email address of the user" example "user@example.com"
 // @Param password body string true "Password for the user" example "securePassword123"
@@ -185,7 +184,6 @@ type RegisterUserPayload struct {
 	UserType string `json:"userType" validate:"required,oneof=client moderator"`
 }
 
-// LoginUserPayload представляет данные для входа пользователя
 // @Description Payload for user login
 // @Param id body string true "UUID of the user" example "f47ac10b-58cc-4372-a567-0e02b2c3d479"
 // @Param password body string true "Password for the user" example "securePassword123"
@@ -225,5 +223,5 @@ type Subscription struct {
 type SubscribePayload struct {
 	// @Description Email address to subscribe to house updates
 	// @Example "user@example.com"
-	Email string `json:"email" validate:"required"`
+	Email string `json:"email" validate:"required,email"`
 }
