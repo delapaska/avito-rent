@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/delapaska/avito-rent/models"
 	"github.com/google/uuid"
@@ -43,12 +44,14 @@ func (s *Store) CreateFlat(flat models.Flat) (models.Flat, error) {
 		return models.Flat{}, err
 	}
 
+	currentTime := time.Now().UTC().Format("2006-01-02T15:04:05Z")
+
 	queryUpdateHouse := `
 		UPDATE house
-		SET updated_at = CURRENT_TIMESTAMP
-		WHERE id = $1`
+		SET updated_at = $1
+		WHERE id = $2`
 
-	_, err = tx.Exec(queryUpdateHouse, flat.House_id)
+	_, err = tx.Exec(queryUpdateHouse, currentTime, flat.House_id)
 	if err != nil {
 		log.Printf("Error executing update query: %v\n", err)
 		return models.Flat{}, err
@@ -70,7 +73,7 @@ func (s *Store) UpdateFlatStatus(userID uuid.UUID, flat models.UpdateStatusPaylo
 	}
 	defer tx.Rollback()
 
-	var currentStatus models.FlatStatus
+	var currentStatus string
 	var currentModeratorID uuid.UUID
 	queryGetStatus := `
 		SELECT status, moderator_id

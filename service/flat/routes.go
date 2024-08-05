@@ -1,7 +1,6 @@
 package flat
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/delapaska/avito-rent/middleware"
@@ -38,6 +37,7 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 
 // @Summary Create Flat
 // @Description Create a new flat with provided details. Requires authorization for both moderator and client.
+// @Tags Flat
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -92,6 +92,7 @@ func (h *Handler) handleCreateFlat(c *gin.Context) {
 
 // handleUpdateFlatStatus updates the status of a flat
 // @Summary Update Flat Status
+// @Tags Flat
 // @Description Update the status of a flat. Requires moderator access.
 // @Accept json
 // @Produce json
@@ -128,15 +129,6 @@ func (h *Handler) handleUpdateFlatStatus(c *gin.Context) {
 	if err := utils.ParseJSON(c, &payload); err != nil {
 		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
 			"message":    err.Error(),
-			"request_id": requestId,
-			"code":       http.StatusBadRequest,
-		})
-		return
-	}
-
-	if !models.ValidStatuses[payload.Status] {
-		utils.WriteJSON(c, http.StatusBadRequest, gin.H{
-			"message":    fmt.Sprintf("invalid status %s", payload.Status),
 			"request_id": requestId,
 			"code":       http.StatusBadRequest,
 		})

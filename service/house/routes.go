@@ -38,6 +38,7 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 
 // handleCreateHouse creates a new house
 // @Summary Create House
+// @Tags House
 // @Description Create a new house. Requires moderator access.
 // @Accept json
 // @Produce json
@@ -92,6 +93,7 @@ func (h *Handler) handleCreateHouse(c *gin.Context) {
 
 // @Summary Get House Flats
 // @Description Retrieve flats for a specific house. Requires authorization for both moderator and client.
+// @Tags House
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -125,6 +127,7 @@ func (h *Handler) handleGetHouseFlats(c *gin.Context) {
 
 // @Summary Subscribe to House
 // @Description Subscribe to updates for a specific house. Requires authorization for both moderator and client.
+// @Tags House
 // @Accept json
 // @Produce json
 // @Security Bearer

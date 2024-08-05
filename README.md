@@ -18,11 +18,24 @@ git clone https://github.com/delapaska/avito-rent.git
 
 ### Конфигурация 
 
-Конфигурация реализована через `.env` файл, в репозитории есть файл `.env.example` в котором описаны необходимые переменные (можно просто скопировать), но я сделаю небольшое описание, для переменных, которые считаю важными.
-`DB_HOST` должна быть одноимённа с именем контейнера бд, в данном случае это будет `avito-db`. 
-`DB_NAME` - имя для базы можно выбрать любое, так как создан скрипт `init.db`, создающий базу данных, а также автоматически производятся миграции
-`PORT` - базовый порт необходимо поставить `8080`
+Конфигурация реализована через `.env` файл, в репозитории есть файл `.env.example` в котором описаны необходимые переменные, но я сделаю небольшое описание.
 
+```
+#Server
+PORT=8080
+
+#Database
+DB_HOST=avito-db
+DB_PORT=5432
+DB_USER=
+DB_PASSWORD=
+DB_NAME=avitorent
+
+#Auth
+JWT_SECRET=eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcyMjc3MzcyNSwiaWF0IjoxNzIyNzczNzI1fQ.pBG_5vt57Q2OLRi8NrWDGXSyauhBN-H08Ks8A7mPY10
+
+```
+Приложение можно запускать с такой конфигурацией, только `DB_USER` и `DB_PASSWORD` поставить на своё усмотрение
 
 
 
@@ -30,7 +43,7 @@ git clone https://github.com/delapaska/avito-rent.git
 ### Запуск сервиса 
 
 1. Если у вас установлена утилита make, то необходимо выполнить следующие команды:
-    - Сборка проекта: `make build`
+    - Сборка проекта:  `make build`
     - Запуск проекта: 
         - Запуск с логами докера: `make run-logs`
         - Запуск без логов: `make run`
@@ -39,13 +52,15 @@ git clone https://github.com/delapaska/avito-rent.git
         - Удаление: `make down`
 
 2. Если утилита make отсутствует:
-    - Сборка проекта: `sudo docker-compose build`
+    - Сборка проекта:  `sudo docker-compose build`
+
     - Запуск проекта: 
         - Запуск с логами докера: `sudo docker-compose up`
         - Запуск без логов: `sudo docker-compose up -d`
     - Завершение работы:
         - Остановка: `sudo docker-compose stop`
         - Удаление: `sudo docker-compose down`
+
 
 ### Endpoints
 Далее указаны примеры маршрутов при запуске через docker-compose:

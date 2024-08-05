@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-# Проверяем, установлены ли переменные окружения
 if [ -z "$POSTGRES_USER" ]; then
   echo "Error: POSTGRES_USER is not set."
   exit 1
@@ -12,7 +11,6 @@ if [ -z "$POSTGRES_DB" ]; then
   exit 1
 fi
 
-# Вывод переменных окружения
 echo "POSTGRES_USER is set to ${POSTGRES_USER}"
 echo "POSTGRES_DB is set to ${POSTGRES_DB}"
 

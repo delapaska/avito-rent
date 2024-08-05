@@ -24,6 +24,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Dummy login",
                 "parameters": [
                     {
@@ -74,6 +77,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Flat"
                 ],
                 "summary": "Create Flat",
                 "parameters": [
@@ -129,6 +135,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Flat"
+                ],
                 "summary": "Update Flat Status",
                 "parameters": [
                     {
@@ -182,6 +191,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "House"
                 ],
                 "summary": "Create House",
                 "parameters": [
@@ -237,6 +249,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "House"
+                ],
                 "summary": "Get House Flats",
                 "parameters": [
                     {
@@ -288,6 +303,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "House"
                 ],
                 "summary": "Subscribe to House",
                 "parameters": [
@@ -345,6 +363,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Login",
                 "parameters": [
                     {
@@ -400,6 +421,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Register",
                 "parameters": [
                     {
@@ -443,7 +467,6 @@ const docTemplate = `{
     },
     "definitions": {
         "models.Flat": {
-            "description": "Represents a flat in the system",
             "type": "object",
             "properties": {
                 "house_id": {
@@ -464,16 +487,11 @@ const docTemplate = `{
                 },
                 "status": {
                     "description": "@Description Status of the flat\n@Example \"created\"",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/models.FlatStatus"
-                        }
-                    ]
+                    "type": "string"
                 }
             }
         },
         "models.FlatPayload": {
-            "description": "Payload for creating a new flat",
             "type": "object",
             "required": [
                 "house_id",
@@ -494,22 +512,6 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
-        },
-        "models.FlatStatus": {
-            "description": "Status of a flat",
-            "type": "string",
-            "enum": [
-                "created",
-                "approved",
-                "declined",
-                "on moderation"
-            ],
-            "x-enum-varnames": [
-                "StatusCreated",
-                "StatusApproved",
-                "StatusDeclined",
-                "StatusOnModeration"
-            ]
         },
         "models.House": {
             "description": "House представляет собой структуру данных для хранения информации о доме.",
@@ -611,7 +613,6 @@ const docTemplate = `{
             }
         },
         "models.SubscribePayload": {
-            "description": "Payload for subscribing to house updates",
             "type": "object",
             "required": [
                 "email"
@@ -624,7 +625,6 @@ const docTemplate = `{
             }
         },
         "models.UpdateStatusPayload": {
-            "description": "Payload for updating the status of a flat",
             "type": "object",
             "required": [
                 "id"
@@ -636,11 +636,7 @@ const docTemplate = `{
                 },
                 "status": {
                     "description": "@Description Status to update the flat to\n@Enum created,approved,declined,on moderation\n@Example \"approved\"",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/models.FlatStatus"
-                        }
-                    ]
+                    "type": "string"
                 }
             }
         },
@@ -702,7 +698,9 @@ const docTemplate = `{
                 "message": {
                     "type": "string"
                 },
-                "request_id": {}
+                "request_id": {
+                    "type": "string"
+                }
             }
         }
     },
@@ -718,7 +716,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "",
+	Host:             "localhost:8080",
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Avito-Rent API",

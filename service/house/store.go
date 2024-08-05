@@ -15,15 +15,19 @@ type Store struct {
 func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
+
 func (s *Store) CreateHouse(house models.House) (models.House, error) {
 	log.Println("Create House")
+
+	currentTime := time.Now().UTC().Format("2006-01-02T15:04:05Z")
+
 	query := `
 		INSERT INTO house (address, year, developer, created_at, updated_at)
-		VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		VALUES ($1, $2, $3, $4, $4)
 		RETURNING id, address, year, developer, created_at, updated_at`
 
 	var insertedHouse models.House
-	err := s.db.QueryRow(query, house.Address, house.Year, house.Developer).Scan(
+	err := s.db.QueryRow(query, house.Address, house.Year, house.Developer, currentTime).Scan(
 		&insertedHouse.Id,
 		&insertedHouse.Address,
 		&insertedHouse.Year,
@@ -44,14 +48,12 @@ func (s *Store) GetHouseFlats(houseID string, userRole string) ([]models.Flat, e
 	var args []interface{}
 
 	if userRole == "moderator" {
-
 		query = `
 			SELECT id, house_id, price, rooms, status
 			FROM flat
 			WHERE house_id = $1`
 		args = append(args, houseID)
 	} else {
-
 		query = `
 			SELECT id, house_id, price, rooms, status
 			FROM flat
@@ -83,7 +85,10 @@ func (s *Store) GetHouseFlats(houseID string, userRole string) ([]models.Flat, e
 
 	return flats, nil
 }
+
 func (s *Store) AddSubscription(houseID, email string) error {
-	_, err := s.db.Exec("INSERT INTO subscriptions (house_id, email, created_at) VALUES ($1, $2, $3)", houseID, email, time.Now())
+
+	currentTime := time.Now().UTC().Format("2006-01-02T15:04:05Z")
+	_, err := s.db.Exec("INSERT INTO subscriptions (house_id, email, created_at) VALUES ($1, $2, $3)", houseID, email, currentTime)
 	return err
 }

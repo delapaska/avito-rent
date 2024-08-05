@@ -8,31 +8,20 @@ import (
 )
 
 // @Description Status of a flat
-// @Type string
-// @Enum created,approved,declined,on moderation
-// @Example "created"
-type FlatStatus string
-
 const (
+
 	// @Description Flat has been created but not yet approved
-	StatusCreated FlatStatus = "created"
+	StatusCreated string = "created"
 
 	// @Description Flat has been approved and is available
-	StatusApproved FlatStatus = "approved"
+	StatusApproved string = "approved"
 
 	// @Description Flat has been declined and is not available
-	StatusDeclined FlatStatus = "declined"
+	StatusDeclined string = "declined"
 
 	// @Description Flat is under moderation and approval is pending
-	StatusOnModeration FlatStatus = "on moderation"
+	StatusOnModeration string = "on moderation"
 )
-
-var ValidStatuses = map[FlatStatus]bool{
-	StatusCreated:      true,
-	StatusApproved:     true,
-	StatusDeclined:     true,
-	StatusOnModeration: true,
-}
 
 type DummyStore interface{}
 
@@ -106,59 +95,52 @@ type FlatStore interface {
 }
 
 // @Description Represents a flat in the system
-// @Type object
+
 // @Name Flat
 // @Example { "id": 1, "house_id": 101, "price": 1200, "rooms": 3, "status": "created" }
 type Flat struct {
 	// @Description Unique identifier for the flat
 	// @Example 1
 	Id int `json:"id"`
-
 	// @Description Unique identifier for the house to which the flat belongs
 	// @Example 101
 	House_id int `json:"house_id"`
-
 	// @Description Price of the flat
 	// @Example 1200
 	Price int `json:"price"`
-
 	// @Description Number of rooms in the flat
 	// @Example 3
 	Rooms int `json:"rooms"`
-
 	// @Description Status of the flat
 	// @Example "created"
-	Status FlatStatus `json:"status"`
+	Status string `json:"status"`
 }
 
 // @Description Payload for updating the status of a flat
-// @Type object
+
 // @Name UpdateStatusPayload
 // @Example { "status": "approved", "id": 1 }
 type UpdateStatusPayload struct {
 	// @Description Status to update the flat to
 	// @Enum created,approved,declined,on moderation
 	// @Example "approved"
-	Status FlatStatus `json:"status" validate:"required oneof=created on moderation approved declined"`
-
+	Status string `json:"status" validate:"required oneof=created on moderation approved declined"`
 	// @Description Unique identifier of the flat to update
 	// @Example 1
 	Id int `json:"id" validate:"required"`
 }
 
 // @Description Payload for creating a new flat
-// @Type object
+
 // @Name FlatPayload
 // @Example { "house_id": 101, "price": 1200, "rooms": 3 }
 type FlatPayload struct {
 	// @Description Unique identifier of the house to which the flat belongs
 	// @Example 101
 	House_id int `json:"house_id" validate:"required"`
-
 	// @Description Price of the flat
 	// @Example 1200
 	Price int `json:"price" validate:"required"`
-
 	// @Description Number of rooms in the flat
 	// @Example 3
 	Rooms int `json:"rooms" validate:"required"`
@@ -171,22 +153,19 @@ type UserStore interface {
 }
 
 // @Description User information
-// @Type object
+
 // @Name User
 // @Example { "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "email": "user@example.com", "password": "password123", "userType": "client" }
 type User struct {
 	// @Description Unique identifier of the user
 	// @Example "3fa85f64-5717-4562-b3fc-2c963f66afa6"
 	User_id uuid.UUID `json:"user_id"`
-
 	// @Description Email address of the user
 	// @Example "user@example.com"
 	Email string `json:"email"`
-
 	// @Description Password of the user
 	// @Example "password123"
 	Password string `json:"password"`
-
 	// @Description Type of the user (e.g., client, moderator)
 	// @Example "client"
 	UserType string `json:"userType"`
@@ -198,13 +177,10 @@ type User struct {
 // @Param password body string true "Password for the user" example "securePassword123"
 // @Param userType body string true "Type of the user. Can be 'client' or 'moderator'" example "client"
 type RegisterUserPayload struct {
-
 	// @example user@example.com
 	Email string `json:"email" validate:"required,email"`
-
 	// @example securePassword123
 	Password string `json:"password" validate:"required,min=3,max=16"`
-
 	// @example client
 	UserType string `json:"userType" validate:"required,oneof=client moderator"`
 }
@@ -214,16 +190,14 @@ type RegisterUserPayload struct {
 // @Param id body string true "UUID of the user" example "f47ac10b-58cc-4372-a567-0e02b2c3d479"
 // @Param password body string true "Password for the user" example "securePassword123"
 type LoginUserPayload struct {
-
 	// @example f47ac10b-58cc-4372-a567-0e02b2c3d479
 	ID uuid.UUID `json:"id" validate:"required"`
-
 	// @example securePassword123
 	Password string `json:"password" validate:"required"`
 }
 
 // @Description Subscription information
-// @Type object
+
 // @Name Subscription
 // @Example { "id": 1, "house_id": "house_123", "email": "user@example.com", "created_at": "2023-07-21T17:32:28Z" }
 type Subscription struct {
@@ -245,7 +219,7 @@ type Subscription struct {
 }
 
 // @Description Payload for subscribing to house updates
-// @Type object
+
 // @Name SubscribePayload
 // @Example { "email": "user@example.com" }
 type SubscribePayload struct {

@@ -16,6 +16,8 @@ import (
 // @version 1.0
 // @description This is an API for a test job in Avito
 
+// @host localhost:8080
+
 // @securityDefinitions.apiKey Bearer
 // @in header
 // @name Authorization

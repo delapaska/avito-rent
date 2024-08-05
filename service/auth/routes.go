@@ -27,6 +27,7 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 
 // @Summary Login
 // @Description Login with user credentials
+// @Tags Authentication
 // @Accept json
 // @Produce json
 // @Param request body models.LoginUserPayload true "Login request payload"
@@ -97,6 +98,7 @@ func (h *Handler) handleLogin(c *gin.Context) {
 
 // @Summary Register
 // @Description Register a new user
+// @Tags Authentication
 // @Accept json
 // @Produce json
 // @Param request body models.RegisterUserPayload true "Register request payload"

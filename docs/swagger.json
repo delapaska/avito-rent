@@ -6,6 +6,7 @@
         "contact": {},
         "version": "1.0"
     },
+    "host": "localhost:8080",
     "paths": {
         "/dummyLogin": {
             "get": {
@@ -15,6 +16,9 @@
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Authentication"
                 ],
                 "summary": "Dummy login",
                 "parameters": [
@@ -66,6 +70,9 @@
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Flat"
                 ],
                 "summary": "Create Flat",
                 "parameters": [
@@ -121,6 +128,9 @@
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Flat"
+                ],
                 "summary": "Update Flat Status",
                 "parameters": [
                     {
@@ -174,6 +184,9 @@
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "House"
                 ],
                 "summary": "Create House",
                 "parameters": [
@@ -229,6 +242,9 @@
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "House"
+                ],
                 "summary": "Get House Flats",
                 "parameters": [
                     {
@@ -280,6 +296,9 @@
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "House"
                 ],
                 "summary": "Subscribe to House",
                 "parameters": [
@@ -337,6 +356,9 @@
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Login",
                 "parameters": [
                     {
@@ -392,6 +414,9 @@
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Register",
                 "parameters": [
                     {
@@ -435,7 +460,6 @@
     },
     "definitions": {
         "models.Flat": {
-            "description": "Represents a flat in the system",
             "type": "object",
             "properties": {
                 "house_id": {
@@ -456,16 +480,11 @@
                 },
                 "status": {
                     "description": "@Description Status of the flat\n@Example \"created\"",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/models.FlatStatus"
-                        }
-                    ]
+                    "type": "string"
                 }
             }
         },
         "models.FlatPayload": {
-            "description": "Payload for creating a new flat",
             "type": "object",
             "required": [
                 "house_id",
@@ -486,22 +505,6 @@
                     "type": "integer"
                 }
             }
-        },
-        "models.FlatStatus": {
-            "description": "Status of a flat",
-            "type": "string",
-            "enum": [
-                "created",
-                "approved",
-                "declined",
-                "on moderation"
-            ],
-            "x-enum-varnames": [
-                "StatusCreated",
-                "StatusApproved",
-                "StatusDeclined",
-                "StatusOnModeration"
-            ]
         },
         "models.House": {
             "description": "House представляет собой структуру данных для хранения информации о доме.",
@@ -603,7 +606,6 @@
             }
         },
         "models.SubscribePayload": {
-            "description": "Payload for subscribing to house updates",
             "type": "object",
             "required": [
                 "email"
@@ -616,7 +618,6 @@
             }
         },
         "models.UpdateStatusPayload": {
-            "description": "Payload for updating the status of a flat",
             "type": "object",
             "required": [
                 "id"
@@ -628,11 +629,7 @@
                 },
                 "status": {
                     "description": "@Description Status to update the flat to\n@Enum created,approved,declined,on moderation\n@Example \"approved\"",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/models.FlatStatus"
-                        }
-                    ]
+                    "type": "string"
                 }
             }
         },
@@ -694,7 +691,9 @@
                 "message": {
                     "type": "string"
                 },
-                "request_id": {}
+                "request_id": {
+                    "type": "string"
+                }
             }
         }
     },

@@ -26,6 +26,7 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 
 // handleDummyLogin обрабатывает запросы на логин
 // @Summary Dummy login
+// @Tags Authentication
 // @Description Получение JWT токена для dummy пользователя
 // @Accept json
 // @Produce json

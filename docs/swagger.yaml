@@ -1,6 +1,5 @@
 definitions:
   models.Flat:
-    description: Represents a flat in the system
     properties:
       house_id:
         description: |-
@@ -23,14 +22,12 @@ definitions:
           @Example 3
         type: integer
       status:
-        allOf:
-        - $ref: '#/definitions/models.FlatStatus'
         description: |-
           @Description Status of the flat
           @Example "created"
+        type: string
     type: object
   models.FlatPayload:
-    description: Payload for creating a new flat
     properties:
       house_id:
         description: |-
@@ -52,19 +49,6 @@ definitions:
     - price
     - rooms
     type: object
-  models.FlatStatus:
-    description: Status of a flat
-    enum:
-    - created
-    - approved
-    - declined
-    - on moderation
-    type: string
-    x-enum-varnames:
-    - StatusCreated
-    - StatusApproved
-    - StatusDeclined
-    - StatusOnModeration
   models.House:
     description: House представляет собой структуру данных для хранения информации
       о доме.
@@ -159,7 +143,6 @@ definitions:
     - userType
     type: object
   models.SubscribePayload:
-    description: Payload for subscribing to house updates
     properties:
       email:
         description: |-
@@ -170,7 +153,6 @@ definitions:
     - email
     type: object
   models.UpdateStatusPayload:
-    description: Payload for updating the status of a flat
     properties:
       id:
         description: |-
@@ -178,12 +160,11 @@ definitions:
           @Example 1
         type: integer
       status:
-        allOf:
-        - $ref: '#/definitions/models.FlatStatus'
         description: |-
           @Description Status to update the flat to
           @Enum created,approved,declined,on moderation
           @Example "approved"
+        type: string
     required:
     - id
     type: object
@@ -227,8 +208,10 @@ definitions:
         type: integer
       message:
         type: string
-      request_id: {}
+      request_id:
+        type: string
     type: object
+host: localhost:8080
 info:
   contact: {}
   description: This is an API for a test job in Avito
@@ -266,6 +249,8 @@ paths:
           schema:
             $ref: '#/definitions/utils.ErrorResponse'
       summary: Dummy login
+      tags:
+      - Authentication
   /flat/create:
     post:
       consumes:
@@ -301,6 +286,8 @@ paths:
       security:
       - Bearer: []
       summary: Create Flat
+      tags:
+      - Flat
   /flat/update:
     post:
       consumes:
@@ -335,6 +322,8 @@ paths:
       security:
       - Bearer: []
       summary: Update Flat Status
+      tags:
+      - Flat
   /house/{id}:
     get:
       consumes:
@@ -369,6 +358,8 @@ paths:
       security:
       - Bearer: []
       summary: Get House Flats
+      tags:
+      - House
   /house/{id}/subscribe:
     post:
       consumes:
@@ -409,6 +400,8 @@ paths:
       security:
       - Bearer: []
       summary: Subscribe to House
+      tags:
+      - House
   /house/create:
     post:
       consumes:
@@ -443,6 +436,8 @@ paths:
       security:
       - Bearer: []
       summary: Create House
+      tags:
+      - House
   /login:
     post:
       consumes:
@@ -479,6 +474,8 @@ paths:
           schema:
             $ref: '#/definitions/utils.ErrorResponse'
       summary: Login
+      tags:
+      - Authentication
   /register:
     post:
       consumes:
@@ -511,6 +508,8 @@ paths:
           schema:
             $ref: '#/definitions/utils.ErrorResponse'
       summary: Register
+      tags:
+      - Authentication
 securityDefinitions:
   Bearer:
     in: header
