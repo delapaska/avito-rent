@@ -32,7 +32,7 @@ DB_PASSWORD=
 DB_NAME=avitorent
 
 #Auth
-JWT_SECRET=eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcyMjc3MzcyNSwiaWF0IjoxNzIyNzczNzI1fQ.pBG_5vt57Q2OLRi8NrWDGXSyauhBN-H08Ks8A7mPY10
+JWT_SECRET=hciozxsdc8solcsdcje34o9r34j5344lq2iwqs09aasjdfsdcsdolvkdmbr55304p2zxlZXUICCZBNUJKH23J2123LKCXMZLKCAKLSDMAKDHSFXJCNLKZXCCJLXZKCCELJKFFNE4N324NKL4X
 
 ```
 Приложение можно запускать с такой конфигурацией, только `DB_USER` и `DB_PASSWORD` поставить на своё усмотрение
@@ -60,6 +60,18 @@ JWT_SECRET=eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJV
     - Завершение работы:
         - Остановка: `sudo docker-compose stop`
         - Удаление: `sudo docker-compose down`
+
+P.S В процессе разработки я обнаружил, что после первой сборки приложения, при последующих билдах используется часть кэшированных данных. Это приводит к проблемам, если пользователь захочет в конфигурации поменять имя базы данных, на что в ответ получит ответ в логах `database ${DB_NAME} does not exists`. 
+Я нашёл такое решение этой проблеме, так как будет производится смена конфигурации и полная пересборка, то требуется удалить тома и выполнить сборку без кэша.
+Для этого нужно произвести удаление контейнеров такой командой:
+    - C утилитой make: `make clear-vm` 
+    - Без утилиты make: `docker-compose down --volumes --remove-orphans`
+
+Теперь выполняете необходимую смену конфигурации, после чего требуется выполнить сборку без кэша:
+    - C утилитой make:  `make build-nc`
+    - Без утилиты make: `docker-compose build --no-cache`
+
+
 
 
 ### Endpoints
@@ -127,3 +139,6 @@ JWT_SECRET=eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJV
 Так как в документации я не нашёл описания, как правильно сделать ограничение модерации над квартирой с помощью `dummyLogin`, я решил сохранять UUID пользователя в токен, а не только его тип, что в дальнейшем работает и для эндпоинтов авторизации. Также я добавил поле с UUID в таблицу для квартир.
 
 Реализована swagger документация, чтобы открыть её, перейдите по ссылке `localhost:8080/docs/index.html`, в ней описаны все эндпоинты и модели, включая как payload модели, так и основные модели.
+
+
+
