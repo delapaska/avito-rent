@@ -9,17 +9,16 @@ import (
 
 // @Description Status of a flat
 const (
-
-	// @Description Flat has been created but not yet approved
+	// StatusCreated Flat has been created but not yet approved
 	StatusCreated string = "created"
 
-	// @Description Flat has been approved and is available
+	// StatusApproved Flat has been approved and is available
 	StatusApproved string = "approved"
 
-	// @Description Flat has been declined and is not available
+	// StatusDeclined Flat has been declined and is not available
 	StatusDeclined string = "declined"
 
-	// @Description Flat is under moderation and approval is pending
+	// StatusOnModeration Flat is under moderation and approval is pending
 	StatusOnModeration string = "on moderation"
 )
 
