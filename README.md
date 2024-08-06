@@ -35,7 +35,7 @@ DB_NAME=avitorent
 JWT_SECRET=hciozxsdc8solcsdcje34o9r34j5344lq2iwqs09aasjdfsdcsdolvkdmbr55304p2zxlZXUICCZBNUJKH23J2123LKCXMZLKCAKLSDMAKDHSFXJCNLKZXCCJLXZKCCELJKFFNE4N324NKL4X
 
 ```
-Приложение можно запускать с такой конфигурацией, только `DB_USER` и `DB_PASSWORD` поставить на своё усмотрение, `PORT` и `DB_HOST` необходимо оставить стандартными, как в примере.
+Приложение можно запускать с такой конфигурацией, только `DB_USER` и `DB_PASSWORD` поставить на своё усмотрение, `PORT`,`DB_PORT` и `DB_HOST` необходимо оставить стандартными, как в примере.
 
 
 
